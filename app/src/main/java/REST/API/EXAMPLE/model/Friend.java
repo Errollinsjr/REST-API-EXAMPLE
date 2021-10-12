@@ -1,13 +1,14 @@
 package REST.API.EXAMPLE.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Friend<pubic> {
+public class Friend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -21,7 +22,8 @@ public class Friend<pubic> {
     @JsonIgnore
     boolean married;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL)
     List<Address> addresses;
 
     public List<Address> getAddresses() {
