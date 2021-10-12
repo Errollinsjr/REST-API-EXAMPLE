@@ -16,6 +16,12 @@ public class FriendController {
         return friendService.save(friend);
     }
 
+    @GetMapping("/friend/search")
+    Iterable<Friend> findByQuery(@RequestParam("first") String firstName,
+                                 @RequestParam("last") String lastName) {
+        return friendService.findByFirstNameAndLastName(firstName, lastName);
+    }
+
     @GetMapping("/friend")
     Iterable<Friend> read() {
         return friendService.findAll();
