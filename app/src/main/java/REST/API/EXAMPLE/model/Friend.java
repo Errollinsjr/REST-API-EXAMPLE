@@ -3,13 +3,11 @@ package REST.API.EXAMPLE.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
-public class Friend {
+public class Friend<pubic> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -22,6 +20,17 @@ public class Friend {
     int age;
     @JsonIgnore
     boolean married;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    List<Address> addresses;
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
 
     public int getId() {
         return id;
