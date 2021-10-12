@@ -1,9 +1,7 @@
 package REST.API.EXAMPLE.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import javax.persistence.*;
 
 @Entity
 public class Address {
@@ -12,6 +10,10 @@ public class Address {
     private int id;
     private String street;
     private String city;
+
+    @JsonBackReference
+    @ManyToOne
+    Friend friend;
 
     public String getStreet() {
         return street;
