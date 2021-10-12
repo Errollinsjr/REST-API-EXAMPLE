@@ -3,12 +3,18 @@ package REST.API.EXAMPLE.controller;
 import REST.API.EXAMPLE.model.Friend;
 import REST.API.EXAMPLE.service.FriendService;
 import REST.API.EXAMPLE.utils.ErrorMessage;
+import REST.API.EXAMPLE.utils.FieldErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class FriendController {
@@ -17,18 +23,18 @@ public class FriendController {
     FriendService friendService;
 
     @PostMapping("/friend")
-    Friend create(@RequestBody Friend friend) throws ValidationException {
-        if (friend.getId() == 0 && friend.getFirstName() != null && friend.getLastName() != null) {
+    Friend create(@Valid @RequestBody Friend friend) {
             return friendService.save(friend);
-        }
-        else throw new ValidationException("Friend cannot be created");
     }
 
-    //will help us get a json error message
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ValidationException.class)
-    ErrorMessage exceptionHandler(ValidationException e) {
-        return new ErrorMessage("400", e.getMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    List<FieldErrorMessage> exceptionHandler(MethodArgumentNotValidException e) {
+       List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+       List<FieldErrorMessage> fieldErrorMessages = fieldErrors.stream().map(fieldError -> new FieldErrorMessage(fieldError.getField(),
+               fieldError.getDefaultMessage())).collect(Collectors.toList());
+
+       return fieldErrorMessages;
     }
 
     @GetMapping("/friend/search")
